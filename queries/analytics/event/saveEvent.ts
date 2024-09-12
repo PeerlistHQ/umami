@@ -59,6 +59,9 @@ async function relationalQuery(data: {
   } = data;
   const websiteEventId = uuid();
 
+  // eslint-disable-next-line no-console
+  console.log('Saving event in Prisma Client');
+
   const websiteEvent = prisma.client.websiteEvent.create({
     data: {
       id: websiteEventId,

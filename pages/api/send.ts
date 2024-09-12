@@ -49,7 +49,11 @@ export interface NextApiRequestCollect extends NextApiRequest {
 export default async (req: NextApiRequestCollect, res: NextApiResponse) => {
   await useCors(req, res);
 
-  if (isbot(req.headers['user-agent']) && !process.env.DISABLE_BOT_CHECK) {
+  if (
+    isbot(req.headers['user-agent']) &&
+    !process.env.DISABLE_BOT_CHECK &&
+    req.headers['pl-service'] !== 'true'
+  ) {
     return ok(res);
   }
 
