@@ -2,7 +2,7 @@
   <img src="https://content.umami.is/website/images/umami-logo.png" alt="Umami Logo" width="100">
 </p>
 
-<h1 align="center">Umami</h1>
+<h1 align="center"> Umami </h1>
 
 <p align="center">
   <i>Umami is a simple, fast, privacy-focused alternative to Google Analytics.</i>
