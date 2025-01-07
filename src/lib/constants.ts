@@ -64,6 +64,7 @@ export const FILTER_COLUMNS = {
   language: 'language',
   event: 'event_name',
   tag: 'tag',
+  propertyName: 'data_key',
 };
 
 export const COLLECTION_TYPE = {
