@@ -11,6 +11,8 @@ export interface EventDataFieldsRequestQuery {
   startAt: string;
   endAt: string;
   event?: string;
+  url?: string;
+  propertyName?: string;
 }
 
 const schema = {
@@ -33,7 +35,7 @@ export default async (
   await useValidate(schema, req, res);
 
   if (req.method === 'GET') {
-    const { websiteId, startAt, endAt, event, url, propertName, } = req.query;
+    const { websiteId, startAt, endAt, event, url, propertyName } = req.query;
 
     if (!(await canViewWebsite(req.auth, websiteId))) {
       return unauthorized(res);
@@ -46,7 +48,8 @@ export default async (
       startDate,
       endDate,
       event,
-      url, propertName,
+      url,
+      propertyName,
     });
 
     return ok(res, data);

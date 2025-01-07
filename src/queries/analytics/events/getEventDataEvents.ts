@@ -12,16 +12,16 @@ export async function getEventDataEvents(
   });
 }
 
-const getFilterQueryString = (filter={}) => {
-  const query = ``;
-  if(filter.url){
-    query =` ${query} and website_event.url_path = {{url}} `
+const getFilterQueryString = (filter: QueryFilters = {}) => {
+  let query = ``;
+  if (filter.url) {
+    query = ` ${query} and website_event.url_path = {{url}} `;
   }
-  if(filter.propertyName){
-    query =` ${query} and event_data.data_key = {{propertyName}} `
+  if (filter.propertyName) {
+    query = ` ${query} and event_data.data_key = {{propertyName}} `;
   }
   return query;
-}
+};
 
 async function relationalQuery(websiteId: string, filters: QueryFilters) {
   const { rawQuery, parseFilters } = prisma;

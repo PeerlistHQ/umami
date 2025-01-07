@@ -180,6 +180,7 @@ export interface QueryFilters {
   event?: string;
   search?: string;
   tag?: string;
+  propertyName?: string;
 }
 
 export interface QueryOptions {
