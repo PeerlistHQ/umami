@@ -1,9 +1,9 @@
-import clickhouse from '@/lib/clickhouse';
-import { CLICKHOUSE, PRISMA, runQuery } from '@/lib/db';
-import prisma from '@/lib/prisma';
-import type { QueryFilters } from '@/lib/types';
+import clickhouse from "@/lib/clickhouse";
+import { CLICKHOUSE, PRISMA, runQuery } from "@/lib/db";
+import prisma from "@/lib/prisma";
+import type { QueryFilters } from "@/lib/types";
 
-const FUNCTION_NAME = 'getEventDataEvents';
+const FUNCTION_NAME = "getEventDataEvents";
 
 export interface WebsiteEventData {
   eventName?: string;
@@ -21,6 +21,17 @@ export async function getEventDataEvents(
     [CLICKHOUSE]: () => clickhouseQuery(...args),
   });
 }
+
+const getFilterQueryString = (filter: QueryFilters = {}) => {
+  let query = ``;
+  if (filter.url) {
+    query = ` ${query} and website_event.url_path = {{url}} `;
+  }
+  if (filter.propertyName) {
+    query = ` ${query} and event_data.data_key = {{propertyName}} `;
+  }
+  return query;
+};
 
 async function relationalQuery(websiteId: string, filters: QueryFilters) {
   const { rawQuery, parseFilters } = prisma;
@@ -45,11 +56,12 @@ async function relationalQuery(websiteId: string, filters: QueryFilters) {
       where event_data.website_id = {{websiteId::uuid}}
         and event_data.created_at between {{startDate}} and {{endDate}}
         and website_event.event_name = {{event}}
+      ${getFilterQueryString(filters)}
       group by website_event.event_name, event_data.data_key, event_data.data_type, event_data.string_value
       order by 1 asc, 2 asc, 3 asc, 5 desc
       `,
       queryParams,
-      FUNCTION_NAME,
+      FUNCTION_NAME
     );
   }
 
@@ -68,14 +80,16 @@ async function relationalQuery(websiteId: string, filters: QueryFilters) {
     limit 500
     `,
     queryParams,
-    FUNCTION_NAME,
+    FUNCTION_NAME
   );
 }
 
 async function clickhouseQuery(
   websiteId: string,
-  filters: QueryFilters,
-): Promise<{ eventName: string; propertyName: string; dataType: number; total: number }[]> {
+  filters: QueryFilters
+): Promise<
+  { eventName: string; propertyName: string; dataType: number; total: number }[]
+> {
   const { rawQuery, parseFilters } = clickhouse;
   const { event } = filters;
   const { filterQuery, cohortQuery, queryParams } = parseFilters({
@@ -103,12 +117,13 @@ async function clickhouseQuery(
         and event_data.created_at between {startDate:DateTime64} and {endDate:DateTime64}
         and event_data.event_name = {event:String}
       ${filterQuery}
+      ${getFilterQueryString(filters)}
       group by data_key, data_type, string_value, event_name
       order by 1 asc, 2 asc, 3 asc, 5 desc
       limit 500
       `,
       queryParams,
-      FUNCTION_NAME,
+      FUNCTION_NAME
     );
   }
 
@@ -134,6 +149,6 @@ async function clickhouseQuery(
     limit 500
     `,
     queryParams,
-    FUNCTION_NAME,
+    FUNCTION_NAME
   );
 }

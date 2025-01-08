@@ -1,10 +1,13 @@
-import type { UseQueryOptions } from '@tanstack/react-query';
-import type { DATA_TYPE, OPERATORS, ROLES } from './constants';
-import type { TIME_UNIT } from './date';
+import type { UseQueryOptions } from "@tanstack/react-query";
+import type { DATA_TYPE, OPERATORS, ROLES } from "./constants";
+import type { TIME_UNIT } from "./date";
 
 export type ObjectValues<T> = T[keyof T];
 
-export type ReactQueryOptions<T = any> = Omit<UseQueryOptions<T, Error, T>, 'queryKey' | 'queryFn'>;
+export type ReactQueryOptions<T = any> = Omit<
+  UseQueryOptions<T, Error, T>,
+  "queryKey" | "queryFn"
+>;
 
 export type TimeUnit = ObjectValues<typeof TIME_UNIT>;
 export type Role = ObjectValues<typeof ROLES>;
@@ -90,6 +93,7 @@ export interface FilterParams {
   segment?: string;
   cohort?: string;
   compare?: string;
+  propertyName?: string;
 }
 
 export interface SortParams {
