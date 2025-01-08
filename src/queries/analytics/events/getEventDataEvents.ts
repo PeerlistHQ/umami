@@ -12,6 +12,17 @@ export async function getEventDataEvents(
   });
 }
 
+const getFilterQueryString = (filter: QueryFilters = {}) => {
+  let query = ``;
+  if (filter.url) {
+    query = ` ${query} and website_event.url_path = {{url}} `;
+  }
+  if (filter.propertyName) {
+    query = ` ${query} and event_data.data_key = {{propertyName}} `;
+  }
+  return query;
+};
+
 async function relationalQuery(websiteId: string, filters: QueryFilters) {
   const { rawQuery, parseFilters } = prisma;
   const { event } = filters;
@@ -32,6 +43,7 @@ async function relationalQuery(websiteId: string, filters: QueryFilters) {
       where event_data.website_id = {{websiteId::uuid}}
         and event_data.created_at between {{startDate}} and {{endDate}}
         and website_event.event_name = {{event}}
+      ${getFilterQueryString(filters)}
       group by website_event.event_name, event_data.data_key, event_data.data_type, event_data.string_value
       order by 1 asc, 2 asc, 3 asc, 5 desc
       `,
@@ -80,6 +92,7 @@ async function clickhouseQuery(
       where website_id = {websiteId:UUID}
         and created_at between {startDate:DateTime64} and {endDate:DateTime64}
         and event_name = {event:String}
+        ${getFilterQueryString(filters)}
       group by data_key, data_type, string_value, event_name
       order by 1 asc, 2 asc, 3 asc, 5 desc
       limit 500
