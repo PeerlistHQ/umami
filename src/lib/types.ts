@@ -168,6 +168,9 @@ export interface QueryFilters {
   url?: string;
   referrer?: string;
   title?: string;
+  ownerId?: string;
+  pageId?: string;
+  pageType?: string;
   query?: string;
   host?: string;
   os?: string;

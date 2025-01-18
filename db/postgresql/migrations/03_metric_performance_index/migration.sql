@@ -48,3 +48,6 @@ CREATE INDEX "website_event_website_id_created_at_page_title_idx" ON "website_ev
 
 -- CreateIndex
 CREATE INDEX "website_event_website_id_created_at_event_name_idx" ON "website_event"("website_id", "created_at", "event_name");
+
+-- CreateIndex
+CREATE INDEX "website_event_website_id_created_at_page_owner_id_page_type_idx" ON "website_event"("website_id", "created_at", "page_owner_id", "page_type");
