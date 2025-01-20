@@ -60,6 +60,9 @@ CREATE TABLE "website_event" (
     "referrer_query" VARCHAR(500),
     "referrer_domain" VARCHAR(500),
     "page_title" VARCHAR(500),
+    "page_owner_id" VARCHAR(500),
+    "page_type" VARCHAR(500),
+    "page_id" VARCHAR(500),
     "event_type" INTEGER NOT NULL DEFAULT 1,
     "event_name" VARCHAR(50),
 
