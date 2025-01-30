@@ -166,6 +166,7 @@ export interface QueryFilters {
   unit?: string;
   eventType?: number;
   url?: string;
+  urls?: [];
   referrer?: string;
   title?: string;
   query?: string;

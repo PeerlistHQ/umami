@@ -13,6 +13,7 @@ export interface WebsiteStatsRequestQuery {
   startAt: number;
   endAt: number;
   url?: string;
+  urls?: string;
   referrer?: string;
   title?: string;
   query?: string;
@@ -34,6 +35,7 @@ const schema = {
     startAt: yup.number().required(),
     endAt: yup.number().required(),
     url: yup.string(),
+    urls: yup.string(),
     referrer: yup.string(),
     title: yup.string(),
     query: yup.string(),
@@ -58,7 +60,7 @@ export default async (
   await useAuth(req, res);
   await useValidate(schema, req, res);
 
-  const { websiteId, compare } = req.query;
+  const { websiteId, compare, urls } = req.query;
 
   if (req.method === 'GET') {
     if (!(await canViewWebsite(req.auth, websiteId))) {
@@ -72,7 +74,13 @@ export default async (
       endDate,
     );
 
+    let urlsArray;
+    if (req.query.urls) {
+      urlsArray = urls.split(',');
+    }
     const filters = getRequestFilters(req);
+
+    filters['urls'] = urlsArray;
 
     const metrics = await getWebsiteStats(websiteId, {
       ...filters,
