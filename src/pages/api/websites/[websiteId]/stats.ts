@@ -80,7 +80,7 @@ export default async (
     }
     const filters = getRequestFilters(req);
 
-    filters['urls'] = urlsArray;
+    filters['urls'] = urlsArray.map((x: string) => x.trim()).filter(x => x);
 
     const metrics = await getWebsiteStats(websiteId, {
       ...filters,
