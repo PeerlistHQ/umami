@@ -75,6 +75,8 @@ export interface DateParams {
 
 export interface FilterParams {
   path?: string;
+  url?: string;
+  urls?: [];
   referrer?: string;
   title?: string;
   query?: string;
