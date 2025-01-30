@@ -74,7 +74,7 @@ export default async (
       endDate,
     );
 
-    let urlsArray;
+    let urlsArray = [];
     if (req.query.urls) {
       urlsArray = urls.split(',');
     }
