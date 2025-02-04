@@ -254,6 +254,9 @@ async function connect() {
   return clickhouse;
 }
 
+const getMultiURLPathQuery = (urls = []) =>
+  urls.length > 0 ? ` and url_path in ('${urls.join("','")}') ` : '';
+
 export default {
   enabled,
   client: clickhouse,
@@ -270,4 +273,5 @@ export default {
   findFirst,
   rawQuery,
   insert,
+  getMultiURLPathQuery,
 };

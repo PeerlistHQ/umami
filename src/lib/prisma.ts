@@ -349,6 +349,9 @@ function getClient() {
 
 const client = (globalThis[PRISMA] || getClient()) as ReturnType<typeof getClient>;
 
+const getMultiURLPathQuery = (urls = []) =>
+  urls.length > 0 ? ` and url_path in ('${urls.join("','")}') ` : '';
+
 export default {
   client,
   transaction,
@@ -365,4 +368,5 @@ export default {
   pagedRawQuery,
   parseFilters,
   rawQuery,
+  getMultiURLPathQuery,
 };

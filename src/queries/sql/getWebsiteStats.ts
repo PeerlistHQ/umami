@@ -23,14 +23,11 @@ export async function getWebsiteStats(
   });
 }
 
-const getURLPaths = (urls = []) =>
-  urls.length > 0 ? `and url_path in ('${urls.join("','")}')` : '';
-
 async function relationalQuery(
   websiteId: string,
   filters: QueryFilters,
 ): Promise<WebsiteStatsData[]> {
-  const { getTimestampDiffSQL, parseFilters, rawQuery } = prisma;
+  const { getTimestampDiffSQL, parseFilters, rawQuery, getMultiURLPathQuery } = prisma;
   const { filterQuery, joinSessionQuery, cohortQuery, queryParams } = parseFilters({
     ...filters,
     websiteId,
@@ -57,7 +54,7 @@ async function relationalQuery(
       where website_event.website_id = {{websiteId::uuid}}
         and website_event.created_at between {{startDate}} and {{endDate}}
         and website_event.event_type != 2
-        ${getURLPaths(filters.urls)}
+        ${getMultiURLPathQuery(filters.urls)}
         ${filterQuery}
       group by 1, 2
     ) as t
@@ -71,7 +68,7 @@ async function clickhouseQuery(
   websiteId: string,
   filters: QueryFilters,
 ): Promise<WebsiteStatsData[]> {
-  const { rawQuery, parseFilters } = clickhouse;
+  const { rawQuery, parseFilters, getMultiURLPathQuery } = clickhouse;
   const { filterQuery, cohortQuery, queryParams } = parseFilters({
     ...filters,
     websiteId,
@@ -123,7 +120,7 @@ async function clickhouseQuery(
       and created_at between {startDate:DateTime64} and {endDate:DateTime64}
       and event_type != 2
       ${filterQuery}
-      ${getURLPaths(filters.urls)}
+      ${getMultiURLPathQuery(filters.urls)}
       group by session_id, visit_id
     ) as t;
     `;
