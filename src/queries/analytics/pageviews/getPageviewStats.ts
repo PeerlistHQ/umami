@@ -13,7 +13,7 @@ export async function getPageviewStats(...args: [websiteId: string, filters: Que
 
 async function relationalQuery(websiteId: string, filters: QueryFilters) {
   const { timezone = 'utc', unit = 'day' } = filters;
-  const { getDateSQL, parseFilters, rawQuery } = prisma;
+  const { getDateSQL, parseFilters, rawQuery, getMultiURLPathQuery } = prisma;
   const { filterQuery, joinSession, params } = await parseFilters(websiteId, {
     ...filters,
     eventType: EVENT_TYPE.pageView,
@@ -29,6 +29,7 @@ async function relationalQuery(websiteId: string, filters: QueryFilters) {
     where website_event.website_id = {{websiteId::uuid}}
       and website_event.created_at between {{startDate}} and {{endDate}}
       and event_type = {{eventType}}
+      ${getMultiURLPathQuery(filters.urls)}
       ${filterQuery}
     group by 1
     order by 1
@@ -42,7 +43,7 @@ async function clickhouseQuery(
   filters: QueryFilters,
 ): Promise<{ x: string; y: number }[]> {
   const { timezone = 'utc', unit = 'day' } = filters;
-  const { parseFilters, rawQuery, getDateSQL } = clickhouse;
+  const { parseFilters, rawQuery, getDateSQL, getMultiURLPathQuery } = clickhouse;
   const { filterQuery, params } = await parseFilters(websiteId, {
     ...filters,
     eventType: EVENT_TYPE.pageView,
@@ -81,6 +82,7 @@ async function clickhouseQuery(
       where website_id = {websiteId:UUID}
         and created_at between {startDate:DateTime64} and {endDate:DateTime64}
         and event_type = {eventType:UInt32}
+        ${getMultiURLPathQuery(filters.urls)}
         ${filterQuery}
       group by t
     ) as g

@@ -323,6 +323,9 @@ function getSearchParameters(query: string, filters: { [key: string]: any }[]) {
   };
 }
 
+const getMultiURLPathQuery = (urls = []) =>
+  urls.length > 0 ? ` and url_path in ('${urls.join("','")}') ` : '';
+
 export default {
   ...prisma,
   getAddIntervalQuery,
@@ -339,4 +342,5 @@ export default {
   pagedRawQuery,
   parseFilters,
   rawQuery,
+  getMultiURLPathQuery,
 };

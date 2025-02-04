@@ -16,6 +16,7 @@ export interface WebsitePageviewRequestQuery {
   unit?: string;
   timezone?: string;
   url?: string;
+  urls?: string;
   referrer?: string;
   title?: string;
   host?: string;
@@ -27,6 +28,7 @@ export interface WebsitePageviewRequestQuery {
   city?: string;
   tag?: string;
   compare?: string;
+  onlypageviews?: string;
 }
 
 const schema = {
@@ -37,6 +39,7 @@ const schema = {
     unit: UnitTypeTest,
     timezone: TimezoneTest,
     url: yup.string(),
+    urls: yup.string(),
     referrer: yup.string(),
     title: yup.string(),
     host: yup.string(),
@@ -48,6 +51,7 @@ const schema = {
     city: yup.string(),
     tag: yup.string(),
     compare: yup.string(),
+    onlypageviews: yup.string(),
   }),
 };
 
@@ -59,7 +63,7 @@ export default async (
   await useAuth(req, res);
   await useValidate(schema, req, res);
 
-  const { websiteId, timezone, compare } = req.query;
+  const { websiteId, timezone, compare, onlypageviews } = req.query;
 
   if (req.method === 'GET') {
     if (!(await canViewWebsite(req.auth, websiteId))) {
@@ -75,10 +79,16 @@ export default async (
       timezone,
       unit,
     };
+    let urlsArray = [];
+    if (req.query.urls) {
+      urlsArray = req.query.urls.split(',');
+    }
+
+    filters['urls'] = urlsArray.map((x: string) => x.trim()).filter(x => x);
 
     const [pageviews, sessions] = await Promise.all([
       getPageviewStats(websiteId, filters),
-      getSessionStats(websiteId, filters),
+      onlypageviews ? null : getSessionStats(websiteId, filters),
     ]);
 
     if (compare) {
