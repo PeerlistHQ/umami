@@ -1,16 +1,16 @@
-import { Metadata } from 'next';
-import WebsiteProvider from './WebsiteProvider';
+import type { Metadata } from 'next';
+import { WebsiteLayout } from '@/app/(main)/websites/[websiteId]/WebsiteLayout';
 
 export default async function ({
   children,
   params,
 }: {
   children: any;
-  params: { websiteId: string };
+  params: Promise<{ websiteId: string }>;
 }) {
   const { websiteId } = await params;
 
-  return <WebsiteProvider websiteId={websiteId}>{children}</WebsiteProvider>;
+  return <WebsiteLayout websiteId={websiteId}>{children}</WebsiteLayout>;
 }
 
 export const metadata: Metadata = {

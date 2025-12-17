@@ -1,14 +1,13 @@
-import { getWebsiteSession, getWebsite } from 'queries';
-import { Website, Session } from '@prisma/client';
-import { getClient, redisEnabled } from '@umami/redis-client';
+import type { Session, Website } from '@/generated/prisma/client';
+import redis from '@/lib/redis';
+import { getWebsite } from '@/queries/prisma';
+import { getWebsiteSession } from '@/queries/sql';
 
 export async function fetchWebsite(websiteId: string): Promise<Website> {
   let website = null;
 
-  if (redisEnabled) {
-    const redis = getClient();
-
-    website = await redis.fetch(`website:${websiteId}`, () => getWebsite(websiteId), 86400);
+  if (redis.enabled) {
+    website = await redis.client.fetch(`website:${websiteId}`, () => getWebsite(websiteId), 86400);
   } else {
     website = await getWebsite(websiteId);
   }
@@ -23,10 +22,8 @@ export async function fetchWebsite(websiteId: string): Promise<Website> {
 export async function fetchSession(websiteId: string, sessionId: string): Promise<Session> {
   let session = null;
 
-  if (redisEnabled) {
-    const redis = getClient();
-
-    session = await redis.fetch(
+  if (redis.enabled) {
+    session = await redis.client.fetch(
       `session:${sessionId}`,
       () => getWebsiteSession(websiteId, sessionId),
       86400,

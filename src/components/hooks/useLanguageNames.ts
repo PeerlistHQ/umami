@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { httpGet } from 'next-basics';
+import { useEffect, useState } from 'react';
+import { httpGet } from '@/lib/fetch';
 import enUS from '../../../public/intl/language/en-US.json';
 
 const languageNames = {
@@ -30,5 +30,3 @@ export function useLanguageNames(locale) {
 
   return { languageNames: list };
 }
-
-export default useLanguageNames;
