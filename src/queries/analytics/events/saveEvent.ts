@@ -1,4 +1,12 @@
-import { EVENT_NAME_LENGTH, URL_LENGTH, EVENT_TYPE, PAGE_TITLE_LENGTH } from 'lib/constants';
+import {
+  EVENT_NAME_LENGTH,
+  URL_LENGTH,
+  EVENT_TYPE,
+  PAGE_TITLE_LENGTH,
+  PAGE_OWNER_ID_LENGTH,
+  PAGE_TYPE_LENGTH,
+  PAGE_ID_LENGTH,
+} from 'lib/constants';
 import { CLICKHOUSE, PRISMA, runQuery } from 'lib/db';
 import clickhouse from 'lib/clickhouse';
 import kafka from 'lib/kafka';
@@ -16,6 +24,9 @@ export async function saveEvent(args: {
   referrerQuery?: string;
   referrerDomain?: string;
   pageTitle?: string;
+  pageOwnerId?: string;
+  pageType?: string;
+  pageId?: string;
   eventName?: string;
   eventData?: any;
   hostname?: string;
@@ -46,6 +57,9 @@ async function relationalQuery(data: {
   referrerQuery?: string;
   referrerDomain?: string;
   pageTitle?: string;
+  pageOwnerId?: string;
+  pageType?: string;
+  pageId?: string;
   eventName?: string;
   eventData?: any;
   tag?: string;
@@ -62,6 +76,9 @@ async function relationalQuery(data: {
     eventName,
     eventData,
     pageTitle,
+    pageOwnerId,
+    pageType,
+    pageId,
     tag,
   } = data;
   const websiteEventId = uuid();
@@ -78,6 +95,9 @@ async function relationalQuery(data: {
       referrerQuery: referrerQuery?.substring(0, URL_LENGTH),
       referrerDomain: referrerDomain?.substring(0, URL_LENGTH),
       pageTitle: pageTitle?.substring(0, PAGE_TITLE_LENGTH),
+      pageOwnerId: pageOwnerId?.substring(0, PAGE_OWNER_ID_LENGTH),
+      pageType: pageType?.substring(0, PAGE_TYPE_LENGTH),
+      pageId: pageId?.substring(0, PAGE_ID_LENGTH),
       eventType: eventName ? EVENT_TYPE.customEvent : EVENT_TYPE.pageView,
       eventName: eventName ? eventName?.substring(0, EVENT_NAME_LENGTH) : null,
       tag,
@@ -108,6 +128,9 @@ async function clickhouseQuery(data: {
   referrerQuery?: string;
   referrerDomain?: string;
   pageTitle?: string;
+  pageOwnerId?: string;
+  pageType?: string;
+  pageId?: string;
   eventName?: string;
   eventData?: any;
   hostname?: string;
@@ -132,6 +155,9 @@ async function clickhouseQuery(data: {
     referrerQuery,
     referrerDomain,
     pageTitle,
+    pageOwnerId,
+    pageType,
+    pageId,
     eventName,
     eventData,
     country,
@@ -167,6 +193,9 @@ async function clickhouseQuery(data: {
     referrer_query: referrerQuery?.substring(0, URL_LENGTH),
     referrer_domain: referrerDomain?.substring(0, URL_LENGTH),
     page_title: pageTitle?.substring(0, PAGE_TITLE_LENGTH),
+    page_owner_id: pageOwnerId?.substring(0, PAGE_OWNER_ID_LENGTH),
+    page_type: pageType?.substring(0, PAGE_TYPE_LENGTH),
+    page_id: pageId?.substring(0, PAGE_ID_LENGTH),
     event_type: eventName ? EVENT_TYPE.customEvent : EVENT_TYPE.pageView,
     event_name: eventName ? eventName?.substring(0, EVENT_NAME_LENGTH) : null,
     tag: tag,

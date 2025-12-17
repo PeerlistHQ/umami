@@ -54,6 +54,9 @@ export const FILTER_COLUMNS = {
   referrer: 'referrer_domain',
   host: 'hostname',
   title: 'page_title',
+  ownerId: 'page_owner_id',
+  pageType: 'page_type',
+  pageId: 'page_id',
   query: 'url_query',
   os: 'os',
   browser: 'browser',
@@ -257,6 +260,9 @@ export const MOBILE_SCREEN_WIDTH = 479;
 
 export const URL_LENGTH = 500;
 export const PAGE_TITLE_LENGTH = 500;
+export const PAGE_OWNER_ID_LENGTH = 500;
+export const PAGE_TYPE_LENGTH = 500;
+export const PAGE_ID_LENGTH = 500;
 export const EVENT_NAME_LENGTH = 50;
 
 export const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];

@@ -23,6 +23,9 @@ CREATE TABLE umami.website_event
     referrer_query String,
     referrer_domain String,
     page_title String,
+    page_owner_id String,
+    page_type String,
+    page_id String,
     --events
     event_type UInt32,
     event_name String,
@@ -92,6 +95,9 @@ CREATE TABLE umami.website_event_stats_hourly
     url_query SimpleAggregateFunction(groupArrayArray, Array(String)),
     referrer_domain SimpleAggregateFunction(groupArrayArray, Array(String)),
     page_title SimpleAggregateFunction(groupArrayArray, Array(String)),
+    page_owner_id SimpleAggregateFunction(groupArrayArray, Array(String)),
+    page_type SimpleAggregateFunction(groupArrayArray, Array(String)),
+    page_id SimpleAggregateFunction(groupArrayArray, Array(String)),
     event_type UInt32,
     event_name SimpleAggregateFunction(groupArrayArray, Array(String)),
     views SimpleAggregateFunction(sum, UInt64),
@@ -133,6 +139,9 @@ SELECT
     url_query,
     referrer_domain,
     page_title,
+    page_owner_id,
+    page_type,
+    page_id,
     event_type,
     event_name,
     views,
@@ -159,6 +168,9 @@ FROM (SELECT
     arrayFilter(x -> x != '', groupArray(url_query)) url_query,
     arrayFilter(x -> x != '', groupArray(referrer_domain)) referrer_domain,
     arrayFilter(x -> x != '', groupArray(page_title)) page_title,
+    arrayFilter(x -> x != '', groupArray(page_owner_id)) page_owner_id,
+    arrayFilter(x -> x != '', groupArray(page_type)) page_type,
+    arrayFilter(x -> x != '', groupArray(page_id)) page_id,
     event_type,
     if(event_type = 2, groupArray(event_name), []) event_name,
     sumIf(1, event_type = 1) views,
@@ -183,16 +195,24 @@ GROUP BY website_id,
     timestamp);
 
 -- projections
-ALTER TABLE umami.website_event 
+ALTER TABLE umami.website_event
 ADD PROJECTION website_event_url_path_projection (
 SELECT * ORDER BY toStartOfDay(created_at), website_id, url_path, created_at
 );
 
 ALTER TABLE umami.website_event MATERIALIZE PROJECTION website_event_url_path_projection;
 
-ALTER TABLE umami.website_event 
+ALTER TABLE umami.website_event
 ADD PROJECTION website_event_referrer_domain_projection (
 SELECT * ORDER BY toStartOfDay(created_at), website_id, referrer_domain, created_at
 );
 
 ALTER TABLE umami.website_event MATERIALIZE PROJECTION website_event_referrer_domain_projection;
+
+
+ALTER TABLE umami.website_event
+ADD PROJECTION website_event_page_owner_id_page_type_projection (
+SELECT * ORDER BY toStartOfDay(created_at), website_id, page_owner_id, page_type
+);
+
+ALTER TABLE umami.website_event MATERIALIZE PROJECTION website_event_page_owner_id_page_type_projection;

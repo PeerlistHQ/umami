@@ -40,6 +40,9 @@ CREATE TABLE umami.website_event_new
     referrer_query String,
     referrer_domain String,
     page_title String,
+    page_owner_id String,
+    page_type String,
+    page_id String,
     event_type UInt32,
     event_name String,
     created_at DateTime('UTC'),
@@ -70,6 +73,9 @@ SELECT we.website_id,
     we.referrer_query,
     we.referrer_domain,
     we.page_title,
+    we.page_owner_id,
+    we.page_type,
+    we.page_id,
     we.event_type,
     we.event_name,
     we.created_at,
@@ -77,7 +83,7 @@ SELECT we.website_id,
 FROM umami.website_event we
 JOIN umami.website_event_join j
     ON we.session_id = j.session_id
-        and date_trunc('hour', we.created_at) = j.created_at
+        and date_trunc('hour', we.created_at) = j.created_at;
 
 RENAME TABLE umami.website_event TO umami.website_event_old;
 RENAME TABLE umami.website_event_new TO umami.website_event;

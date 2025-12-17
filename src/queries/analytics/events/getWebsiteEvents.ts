@@ -36,6 +36,9 @@ async function relationalQuery(websiteId: string, filters: QueryFilters, pagePar
       referrer_query as "referrerQuery",
       referrer_domain as "referrerDomain",
       page_title as "pageTitle",
+      page_owner_id as "pageOwnerId",
+      page_id as "pageId",
+      page_type as "pageType",
       event_type as "eventType",
       event_name as "eventName"
     from website_event
@@ -76,6 +79,9 @@ async function clickhouseQuery(websiteId: string, filters: QueryFilters, pagePar
       referrer_query as referrerQuery,
       referrer_domain as referrerDomain,
       page_title as pageTitle,
+      page_owner_id as "pageOwnerId",
+      page_id as "pageId",
+      page_type as "pageType",
       event_type as eventType,
       event_name as eventName
     from website_event
