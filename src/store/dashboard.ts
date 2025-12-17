@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { DASHBOARD_CONFIG, DEFAULT_WEBSITE_LIMIT } from 'lib/constants';
-import { getItem, setItem } from 'next-basics';
+import { DASHBOARD_CONFIG, DEFAULT_WEBSITE_LIMIT } from '@/lib/constants';
+import { getItem, setItem } from '@/lib/storage';
 
 export const initialState = {
   showCharts: true,
@@ -19,4 +19,4 @@ export function saveDashboard(settings) {
   setItem(DASHBOARD_CONFIG, store.getState());
 }
 
-export default store;
+export const useDashboard = store;
